@@ -1,0 +1,93 @@
+<!--
+  FILE: app.html (Root Component Template)
+  PURPOSE: The main layout shell — sidenav + toolbar + router outlet
+
+  CONCEPTS DEMONSTRATED:
+  - Property Binding: [opened]="!isMenuCollapsed"
+  - Event Binding: (click)="toggleMenu()"
+  - RouterLink, RouterLinkActive
+  - @for control flow (Angular 17+)
+  - Interpolation: {{ item.label }}
+-->
+
+<!-- The SpinnerComponent sits here — always visible, shows when HTTP requests run -->
+<app-spinner></app-spinner>
+
+<!-- Material's Sidenav Layout Container -->
+<mat-sidenav-container class="sidenav-container">
+
+  <!-- ─── SIDE NAVIGATION ─────────────────────────────── -->
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    [opened]="true"
+    [class.collapsed]="isMenuCollapsed">
+
+    <!-- ── SIDENAV HEADER (Logo/Brand) ── -->
+    <div class="sidenav-header" [class.collapsed]="isMenuCollapsed">
+      <mat-icon class="brand-icon">business</mat-icon>
+      @if (!isMenuCollapsed) {
+        <div class="brand-text">
+          <span class="brand-name">EmpManager</span>
+          <span class="brand-tagline">v1.0</span>
+        </div>
+      }
+    </div>
+
+    <!-- ── NAVIGATION LIST ── -->
+    <mat-nav-list>
+      @for (item of navItems; track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: false }"
+          [matTooltip]="isMenuCollapsed ? item.tooltip : ''"
+          matTooltipPosition="right">
+
+          <mat-icon [fontIcon]="item.icon" matListItemIcon></mat-icon>
+
+          @if (!isMenuCollapsed) {
+            <span matListItemTitle>{{ item.label }}</span>
+          }
+        </a>
+      }
+    </mat-nav-list>
+
+    <!-- ── SIDENAV FOOTER ── -->
+    <div class="sidenav-footer" [class.collapsed]="isMenuCollapsed">
+      @if (!isMenuCollapsed) {
+        <small>&copy; {{ currentYear }} EmpManager</small>
+      }
+    </div>
+
+  </mat-sidenav>
+
+  <!-- ─── MAIN CONTENT AREA ──────────────────────────── -->
+  <mat-sidenav-content>
+
+    <!-- ── TOP TOOLBAR ── -->
+    <mat-toolbar color="primary" class="app-toolbar">
+      <button mat-icon-button (click)="toggleMenu()" matTooltip="Toggle Menu">
+        <mat-icon>{{ isMenuCollapsed ? 'menu' : 'menu_open' }}</mat-icon>
+      </button>
+
+      <span class="toolbar-title">Employee Management System</span>
+      <span class="toolbar-spacer"></span>
+
+      <button mat-icon-button matTooltip="Notifications">
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Settings">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- ── PAGE CONTENT ── -->
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

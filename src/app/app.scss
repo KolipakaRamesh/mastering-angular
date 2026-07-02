@@ -1,0 +1,134 @@
+/* ─────────────────────────────────────────────────────────────
+   FILE: app.scss  (Root Component Styles)
+
+   Note: Angular components have ENCAPSULATED styles by default.
+   These styles ONLY apply to this component's template.
+   ViewEncapsulation.Emulated (default) — Angular adds unique
+   attributes to scope CSS to this component only.
+   ─────────────────────────────────────────────────────────────  */
+
+.sidenav-container {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── SIDENAV PANEL ─────────────────────────────────────────── */
+mat-sidenav {
+  width: 240px;
+  transition: width 0.3s ease;
+  background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+  border-right: none;
+
+  &.collapsed {
+    width: 64px;
+  }
+}
+
+/* ── SIDENAV HEADER ────────────────────────────────────────── */
+.sidenav-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  &.collapsed {
+    justify-content: center;
+    padding: 20px 0;
+  }
+}
+
+.brand-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.brand-text {
+  margin-left: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.brand-tagline {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── NAVIGATION LINKS ──────────────────────────────────────── */
+.active-link {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-left: 3px solid #82b1ff;
+
+  mat-icon, span {
+    color: #82b1ff !important;
+  }
+}
+
+mat-nav-list a {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+  }
+
+  mat-icon {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+/* ── SIDENAV FOOTER ────────────────────────────────────────── */
+.sidenav-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── TOP TOOLBAR ───────────────────────────────────────────── */
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.toolbar-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+/* ── MAIN CONTENT ──────────────────────────────────────────── */
+.main-content {
+  padding: 24px;
+  overflow-y: auto;
+  height: calc(100vh - 64px);
+  background: #f5f5f5;
+}

@@ -1,0 +1,126 @@
+<!--
+  FILE: dashboard.component.html
+  CONCEPTS SHOWN:
+  - @if / @else (modern control flow)
+  - @for with track
+  - Interpolation {{ }}
+  - Property Binding [property]
+  - Event Binding (event)
+  - ngClass and ngStyle
+  - Built-in Pipes (currency, date)
+  - Signal reading: stats() in template
+  - RouterLink navigation
+-->
+
+<div class="dashboard-container fade-in">
+
+  <app-page-header
+    [title]="'Dashboard'"
+    [subtitle]="'Welcome to Employee Management System'"
+    [showAddButton]="true"
+    [addButtonLabel]="'Add Employee'"
+    (addClicked)="onAddEmployee()">
+  </app-page-header>
+
+  @if (error()) {
+    <div class="error-banner">
+      <mat-icon>error</mat-icon>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <!-- STATS CARDS -->
+  <div class="stats-grid">
+    @for (card of getStatCards(); track card.title) {
+      <mat-card class="stat-card info-card" [routerLink]="card.route" style="cursor: pointer">
+        <mat-card-content>
+          <div class="stat-card-inner">
+            <div class="stat-icon-wrapper" [ngStyle]="{ 'background-color': card.bgColor }">
+              <mat-icon [ngStyle]="{ 'color': card.color }">{{ card.icon }}</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value" [ngStyle]="{ 'color': card.color }">{{ card.value }}</div>
+              <div class="stat-label">{{ card.title }}</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="dashboard-row">
+
+    <!-- RECENT EMPLOYEES -->
+    <mat-card class="info-card recent-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>history</mat-icon>
+          Recent Employees
+        </mat-card-title>
+        <span class="card-header-spacer"></span>
+        <a mat-button color="primary" routerLink="/employees/list">View All</a>
+      </mat-card-header>
+
+      <mat-card-content>
+        @if (recentEmployees().length > 0) {
+          <div class="employee-list">
+            @for (emp of recentEmployees(); track emp.id) {
+              <div class="employee-item" [routerLink]="['/employees', emp.id]">
+                <div class="emp-avatar">
+                  @if (emp.avatarUrl) {
+                    <img [src]="emp.avatarUrl" [alt]="emp.firstName + ' ' + emp.lastName">
+                  } @else {
+                    <mat-icon>person</mat-icon>
+                  }
+                </div>
+                <div class="emp-info">
+                  <div class="emp-name">{{ emp.firstName }} {{ emp.lastName }}</div>
+                  <div class="emp-role">{{ emp.designation }}</div>
+                </div>
+                <div class="emp-dept">
+                  <span class="dept-chip">{{ emp.department }}</span>
+                </div>
+                <span class="status-badge" [ngClass]="getStatusClass(emp.status)">
+                  {{ emp.status }}
+                </span>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <mat-icon>inbox</mat-icon>
+            <p>No employees yet</p>
+            <a mat-raised-button color="primary" routerLink="/employees/add">Add First Employee</a>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- DEPARTMENT BREAKDOWN -->
+    <mat-card class="info-card dept-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>pie_chart</mat-icon>
+          By Department
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @for (item of getDepartmentEntries(); track item.dept) {
+          <div class="dept-row">
+            <span class="dept-name">{{ item.dept }}</span>
+            <div class="dept-bar-container">
+              <div
+                class="dept-bar"
+                [style.width.%]="(item.count / stats().totalEmployees) * 100">
+              </div>
+            </div>
+            <span class="dept-count">{{ item.count }}</span>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+</div>

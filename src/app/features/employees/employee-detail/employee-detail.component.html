@@ -1,0 +1,72 @@
+<div class="detail-container fade-in">
+
+  @if (notFound) {
+    <div class="not-found">
+      <mat-icon>person_off</mat-icon>
+      <h2>Employee Not Found</h2>
+      <p>The employee you're looking for doesn't exist.</p>
+      <a mat-raised-button color="primary" routerLink="/employees/list">Back to List</a>
+    </div>
+  }
+
+  @if (employee) {
+    <app-page-header [title]="employee.firstName + ' ' + employee.lastName" [subtitle]="employee.designation">
+      <button mat-stroked-button routerLink="/employees/list">
+        <mat-icon>arrow_back</mat-icon> Back
+      </button>
+      <button mat-stroked-button color="primary" (click)="editEmployee()">
+        <mat-icon>edit</mat-icon> Edit
+      </button>
+      <button mat-raised-button color="warn" (click)="deleteEmployee()">
+        <mat-icon>delete</mat-icon> Delete
+      </button>
+    </app-page-header>
+
+    <div class="detail-grid">
+      <!-- Profile Card -->
+      <mat-card class="info-card profile-card">
+        <mat-card-content>
+          <div class="profile-avatar">
+            @if (employee.avatarUrl) {
+              <img [src]="employee.avatarUrl" [alt]="employee.firstName">
+            } @else {
+              <div class="avatar-initials">
+                {{ employee.firstName[0] }}{{ employee.lastName[0] }}
+              </div>
+            }
+          </div>
+          <h2>{{ employee.firstName }} {{ employee.lastName }}</h2>
+          <p class="designation">{{ employee.designation }}</p>
+          <span class="status-badge" [class]="getStatusClass(employee.status)">
+            {{ employee.status }}
+          </span>
+          <mat-divider></mat-divider>
+          <div class="profile-info-row"><mat-icon>email</mat-icon><span>{{ employee.email }}</span></div>
+          <div class="profile-info-row"><mat-icon>phone</mat-icon><span>{{ employee.phone }}</span></div>
+          @if (employee.address) {
+            <div class="profile-info-row"><mat-icon>location_on</mat-icon><span>{{ employee.address }}</span></div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Employment Details -->
+      <mat-card class="info-card details-card">
+        <mat-card-header><mat-card-title>Employment Details</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <div class="detail-field"><label>Department</label><span class="dept-badge">{{ employee.department }}</span></div>
+          <mat-divider></mat-divider>
+          <div class="detail-field"><label>Employee ID</label><span>#{{ employee.id.toString().padStart(4, '0') }}</span></div>
+          <mat-divider></mat-divider>
+          <div class="detail-field"><label>Salary</label><span class="salary">{{ employee.salary | currency:'INR':'symbol':'1.0-0' }}</span></div>
+          <mat-divider></mat-divider>
+          <div class="detail-field"><label>Join Date</label><span>{{ employee.joinDate | date:'longDate' }}</span></div>
+          <mat-divider></mat-divider>
+          <div class="detail-field"><label>Status</label>
+            <span class="status-badge" [class]="getStatusClass(employee.status)">{{ employee.status }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+</div>

@@ -1,0 +1,180 @@
+<!--
+  FILE: employee-form.component.html
+  PURPOSE: Employee add/edit form using Reactive Forms
+
+  KEY CONCEPTS:
+  - [formGroup]="employeeForm" — binds FormGroup to form element
+  - formControlName="firstName" — connects input to FormControl
+  - hasError('field', 'error') — check validation errors
+  - (ngSubmit) — form submission event
+  - [disabled] property binding on buttons
+-->
+
+<div class="form-container fade-in">
+
+  <app-page-header
+    [title]="isEditMode ? 'Edit Employee' : 'Add New Employee'"
+    [subtitle]="isEditMode ? 'Update employee information' : 'Fill in the details to add a new team member'">
+  </app-page-header>
+
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+    <!-- PERSONAL INFORMATION -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>person</mat-icon>
+          Personal Information
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="Enter first name">
+            <mat-icon matPrefix>person_outline</mat-icon>
+            @if (hasError('firstName', 'required')) {
+              <mat-error>First name is required</mat-error>
+            }
+            @if (hasError('firstName', 'minlength')) {
+              <mat-error>At least 2 characters required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Enter last name">
+            @if (hasError('lastName', 'required')) {
+              <mat-error>Last name is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="email" placeholder="name@company.com" type="email">
+            <mat-icon matPrefix>email</mat-icon>
+            @if (hasError('email', 'required')) {
+              <mat-error>Email is required</mat-error>
+            }
+            @if (hasError('email', 'email')) {
+              <mat-error>Please enter a valid email address</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phone" placeholder="+91-9876543210">
+            <mat-icon matPrefix>phone</mat-icon>
+            @if (hasError('phone', 'required')) {
+              <mat-error>Phone number is required</mat-error>
+            }
+            @if (hasError('phone', 'invalidPhone')) {
+              <mat-error>Please enter a valid phone number</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Address (Optional)</mat-label>
+          <textarea matInput formControlName="address" rows="2" placeholder="Street, City, State"></textarea>
+          <mat-icon matPrefix>location_on</mat-icon>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- EMPLOYMENT INFORMATION -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>work</mat-icon>
+          Employment Information
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="department">
+              @for (dept of departments; track dept) {
+                <mat-option [value]="dept">{{ dept }}</mat-option>
+              }
+            </mat-select>
+            @if (hasError('department', 'required')) {
+              <mat-error>Department is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Designation / Job Title</mat-label>
+            <input matInput formControlName="designation" placeholder="e.g., Senior Developer">
+            @if (hasError('designation', 'required')) {
+              <mat-error>Designation is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Salary (₹ per annum)</mat-label>
+            <input matInput formControlName="salary" type="number" placeholder="e.g., 75000">
+            <mat-icon matPrefix>currency_rupee</mat-icon>
+            @if (hasError('salary', 'required')) {
+              <mat-error>Salary is required</mat-error>
+            }
+            @if (hasError('salary', 'min')) {
+              <mat-error>Minimum salary is ₹10,000</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Employment Status</mat-label>
+            <mat-select formControlName="status">
+              @for (status of statuses; track status) {
+                <mat-option [value]="status">{{ status }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Join Date</mat-label>
+            <input matInput formControlName="joinDate" [matDatepicker]="picker" placeholder="Select date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            @if (hasError('joinDate', 'required')) {
+              <mat-error>Join date is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Avatar URL (Optional)</mat-label>
+            <input matInput formControlName="avatarUrl" placeholder="https://...">
+            <mat-icon matSuffix>image</mat-icon>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ACTION BUTTONS -->
+    <div class="form-actions">
+      <button mat-stroked-button type="button" (click)="onCancel()">
+        <mat-icon>close</mat-icon>
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="employeeForm.invalid && employeeForm.touched || isSubmitting">
+        <mat-icon>{{ isEditMode ? 'save' : 'person_add' }}</mat-icon>
+        {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update Employee' : 'Add Employee') }}
+      </button>
+    </div>
+
+  </form>
+</div>

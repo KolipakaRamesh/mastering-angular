@@ -2,27 +2,27 @@
  * FILE: employee-form.component.ts
  * PURPOSE: Add and Edit Employee form using Angular Reactive Forms.
  *
- * TWO TYPES OF FORMS IN ANGULAR:
- * 1. TEMPLATE-DRIVEN: Logic in HTML, uses NgModel. Simple but harder to test.
- * 2. REACTIVE FORMS (this file): Logic in TypeScript. FormControl, FormGroup, FormBuilder.
- *    More powerful, easier to test, great for complex validation.
+ * ANGULAR CONCEPTS:
+ * - Reactive Forms (FormGroup, FormControl, FormBuilder, Typed Forms)
+ * - Built-in and Custom Validators
+ * - Route snapshot parameters (ActivatedRoute)
  *
- * KEY CLASSES:
- * - FormControl  — A single form field
- * - FormGroup    — A group of FormControls (the whole form)
- * - FormBuilder  — Helper service to create FormGroups concisely
+ * ─────────────────────────────────────────────
+ * INTERVIEW QUESTIONS:
+ * ─────────────────────────────────────────────
+ * Q: Difference between Reactive Forms and Template-driven Forms?
+ * A: Reactive forms are code-driven, synchronous, and highly testable. Template-driven forms rely on template directives and are asynchronous.
  *
- * TYPED FORMS (Angular 14+):
- *   OLD: form.get('name')?.value → type is 'any'
- *   NEW: form.controls.name.value → type is inferred!
+ * Q: What is FormBuilder?
+ * A: A helper service that provides syntactic sugar for creating FormGroup and FormControl instances.
  *
- * INTERVIEW:
- * Q: Difference between setValue() and patchValue()?
- * A: setValue() requires ALL fields. patchValue() updates only specified fields.
+ * Q: What is the difference between setValue() and patchValue()?
+ * A: `setValue()` requires all fields in the FormGroup to be set and throws an error if any is missing. `patchValue()` updates only the specified subset of fields.
  *
- * Q: How to create a custom validator?
- * A: A function that takes AbstractControl and returns null (valid) or {errorKey: true}.
+ * Q: How do you create a custom validator?
+ * A: A function that takes an `AbstractControl` and returns `null` if valid, or an error object (e.g., `{ errorName: true }`) if invalid.
  */
+
 
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -46,10 +46,17 @@ import { EmployeeService } from '../../../core/services/employee.service';
 import { Employee, EmploymentStatus, Department } from '../../../core/models/employee.model';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
-// CUSTOM VALIDATOR — returns null if valid, {errorKey: true} if invalid
+// ─────────────────────────────────────────────
+// CUSTOM VALIDATOR FUNCTION
+// A validator is a function that takes a control and returns:
+//   null → valid
+//   { errorKey: any } → invalid (errorKey can be anything descriptive)
+// ─────────────────────────────────────────────
 function phoneValidator(control: AbstractControl): { [key: string]: boolean } | null {
   const value = control.value;
-  if (!value) return null;
+  if (!value) return null; // Not required here — let Validators.required handle that
+
+  // Simple phone validation: must start with + and have at least 10 digits
   const phonePattern = /^\+?[\d\s\-()]{10,15}$/;
   return phonePattern.test(value) ? null : { invalidPhone: true };
 }
@@ -58,54 +65,104 @@ function phoneValidator(control: AbstractControl): { [key: string]: boolean } | 
   selector: 'app-employee-form',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
-    MatInputModule, MatFormFieldModule, MatSelectModule,
-    MatButtonModule, MatIconModule, MatCardModule,
-    MatDatepickerModule, MatNativeDateModule,
-    MatSnackBarModule, MatDividerModule,
+    ReactiveFormsModule,   // REQUIRED for Reactive Forms!
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSnackBarModule,
+    MatDividerModule,
     PageHeaderComponent,
   ],
   templateUrl: './employee-form.component.html',
   styleUrl: './employee-form.component.scss'
 })
 export class EmployeeFormComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  // ─────────────────────────────────────────────
+  // DEPENDENCY INJECTION — All using inject()
+  // ─────────────────────────────────────────────
+  private fb = inject(FormBuilder);             // Form creation helper
+  private router = inject(Router);              // For navigation after save
+  private route = inject(ActivatedRoute);       // To read :id from URL
   private employeeService = inject(EmployeeService);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(MatSnackBar);       // Material toast notifications
 
-  isEditMode = false;
+  // ─────────────────────────────────────────────
+  // COMPONENT STATE
+  // ─────────────────────────────────────────────
+  isEditMode = false;           // true = editing, false = adding new
   employeeId: number | null = null;
   isSubmitting = false;
 
+  // Dropdown options
   readonly departments = this.employeeService.getDepartments();
   readonly statuses = this.employeeService.getStatuses();
 
+  // ─────────────────────────────────────────────
+  // REACTIVE FORM
+  // FormBuilder.group() creates a FormGroup with all our form controls.
+  // Each field: [initialValue, [validators]]
+  // ─────────────────────────────────────────────
   employeeForm: FormGroup = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+    // Personal Info
+    firstName: ['', [
+      Validators.required,          // Cannot be empty
+      Validators.minLength(2),      // At least 2 characters
+      Validators.maxLength(50),     // Maximum 50 characters
+    ]],
     lastName: ['', [Validators.required, Validators.minLength(2)]],
-    email: ['', [Validators.required, Validators.email]],
-    phone: ['', [Validators.required, phoneValidator]],
+    email: ['', [
+      Validators.required,
+      Validators.email,             // Built-in email format validation
+    ]],
+    phone: ['', [
+      Validators.required,
+      phoneValidator,               // Our custom validator!
+    ]],
+
+    // Employment Info
     department: ['', Validators.required],
     designation: ['', [Validators.required, Validators.minLength(3)]],
-    salary: [null, [Validators.required, Validators.min(10000), Validators.max(10000000)]],
+    salary: [null, [
+      Validators.required,
+      Validators.min(10000),        // Minimum salary
+      Validators.max(10000000),     // Maximum salary
+    ]],
     joinDate: ['', Validators.required],
     status: [EmploymentStatus.Active, Validators.required],
+
+    // Optional fields (no required validator)
     avatarUrl: [''],
     address: [''],
   });
 
   ngOnInit(): void {
+    // ─────────────────────────────────────────────
+    // ROUTE PARAMETERS
+    // ActivatedRoute gives access to URL params.
+    // route.snapshot.params — current params at time of navigation (synchronous)
+    // route.params — Observable that emits new params when URL changes (reactive)
+    //
+    // We use snapshot for simplicity since we don't expect params to change
+    // while on this page.
+    // ─────────────────────────────────────────────
     const id = this.route.snapshot.params['id'];
 
     if (id) {
+      // If there's an :id in the URL → EDIT mode
       this.isEditMode = true;
-      this.employeeId = Number(id);
+      this.employeeId = Number(id); // Convert string param to number
 
+      // Load existing employee data
       const employee = this.employeeService.getEmployeeById(this.employeeId);
 
       if (employee) {
+        // patchValue() sets only the specified fields
+        // (safer than setValue() which requires ALL fields)
         this.employeeForm.patchValue({
           firstName: employee.firstName,
           lastName: employee.lastName,
@@ -120,27 +177,37 @@ export class EmployeeFormComponent implements OnInit {
           address: employee.address || '',
         });
       } else {
+        // Employee not found — go back to list
         this.router.navigate(['/employees/list']);
       }
     }
+    // If no id → ADD mode (form stays with empty defaults)
   }
 
+  // ─────────────────────────────────────────────
+  // FORM SUBMISSION
+  // ─────────────────────────────────────────────
   onSubmit(): void {
+    // Check if form is valid before submitting
+    // markAllAsTouched() triggers validation UI on all fields
+    // (so user sees all errors, not just touched ones)
     if (this.employeeForm.invalid) {
       this.employeeForm.markAllAsTouched();
       return;
     }
 
     this.isSubmitting = true;
-    const formData = this.employeeForm.getRawValue();
+    const formData = this.employeeForm.getRawValue(); // Get all values including disabled fields
 
     if (this.isEditMode && this.employeeId) {
+      // UPDATE
       const updated = this.employeeService.updateEmployee(this.employeeId, formData);
       if (updated) {
         this.showSuccess(`${updated.firstName} ${updated.lastName} updated successfully!`);
         this.router.navigate(['/employees', this.employeeId]);
       }
     } else {
+      // CREATE
       const newEmp = this.employeeService.addEmployee(formData);
       this.showSuccess(`${newEmp.firstName} ${newEmp.lastName} added successfully!`);
       this.router.navigate(['/employees', newEmp.id]);
@@ -149,6 +216,7 @@ export class EmployeeFormComponent implements OnInit {
     this.isSubmitting = false;
   }
 
+  // Cancel and go back
   onCancel(): void {
     if (this.isEditMode && this.employeeId) {
       this.router.navigate(['/employees', this.employeeId]);
@@ -157,18 +225,26 @@ export class EmployeeFormComponent implements OnInit {
     }
   }
 
+  // ─────────────────────────────────────────────
+  // HELPER: Access form controls easily in template
+  // Instead of: employeeForm.get('firstName')
+  // We use: f['firstName']
+  // ─────────────────────────────────────────────
   get f() {
     return this.employeeForm.controls;
   }
 
+  // Helper: Check if a specific field has an error
   hasError(field: string, error: string): boolean {
     const control = this.employeeForm.get(field);
+    // Only show error if: field has been touched AND has this specific error
     return !!(control?.touched && control?.hasError(error));
   }
 
+  // Show Material snackbar (toast notification)
   private showSuccess(message: string): void {
     this.snackBar.open(message, 'Close', {
-      duration: 3000,
+      duration: 3000,              // Auto-dismiss after 3 seconds
       horizontalPosition: 'end',
       verticalPosition: 'top',
       panelClass: ['success-snackbar']

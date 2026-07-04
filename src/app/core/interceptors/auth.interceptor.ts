@@ -30,7 +30,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // SECURITY BEST PRACTICE: Only attach the JWT token if:
   // 1. The token exists
   // 2. The request is directed to our backend API (prevents leaking the token to third-party domains)
-  const isApiRequest = req.url.startsWith(environment.backendUrl) || req.url.startsWith('api/');
+  const isApiRequest = (environment.backendUrl && req.url.startsWith(environment.backendUrl)) ||
+                       req.url.startsWith('api/') ||
+                       req.url.startsWith('/api/');
 
   if (token && isApiRequest) {
     // Clone the request and add the Authorization header

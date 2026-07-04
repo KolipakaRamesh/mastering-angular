@@ -219,6 +219,10 @@ var app = builder.Build();
 // 1. CORS — must be first (handles OPTIONS preflight before any auth check)
 app.UseCors("AngularDevPolicy");
 
+// Serve Angular frontend static files
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 // 2. HTTPS Redirect — redirect HTTP to HTTPS
 //    We comment this out for local development simplicity.
 //    In production, ALWAYS enable HTTPS.
@@ -234,5 +238,8 @@ app.UseAuthorization();
 
 // 5. CONTROLLERS — routes request to the matching controller action
 app.MapControllers();
+
+// Fallback all other routes to index.html (Angular HTML5 routing)
+app.MapFallbackToFile("index.html");
 
 app.Run();

@@ -15,7 +15,7 @@ export const environment = {
 
   // ── REAL BACKEND API URL in Production ────────────────────────────────
   // Replace with your actual deployed API domain before going live.
-  backendUrl: 'http://localhost:5225',
+  backendUrl: '',
 
   appVersion: '1.0.0',
   features: {

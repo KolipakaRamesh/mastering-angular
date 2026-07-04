@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./backend/EmpManager.API
+      dockerfile: Dockerfile
+    ports:
+      - "5225:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__SecretKey=EmpManager-Prod-SecretKey-2026-MustBe32Chars-Minimum!!
+      - AdminUser__Username=admin
+      - AdminUser__Password=admin123
+      - AllowedOrigins__0=http://localhost:4200
+
+  frontend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend

@@ -7,22 +7,22 @@
 } @else {
 
 <!-- Main Sidenav Layout Container -->
-<mat-sidenav-container class=\"sidenav-container\">
+<mat-sidenav-container class="sidenav-container">
 
   <!-- Side Navigation -->
   <mat-sidenav
     #sidenav
-    mode=\"side\"
-    [opened]=\"true\"
-    [class.collapsed]=\"isMenuCollapsed\">
+    mode="side"
+    [opened]="true"
+    [class.collapsed]="isMenuCollapsed">
 
     <!-- Sidenav Header (Logo/Brand) -->
-    <div class=\"sidenav-header\" [class.collapsed]=\"isMenuCollapsed\">
-      <mat-icon class=\"brand-icon\">business</mat-icon>
+    <div class="sidenav-header" [class.collapsed]="isMenuCollapsed">
+      <mat-icon class="brand-icon">business</mat-icon>
       @if (!isMenuCollapsed) {
-        <div class=\"brand-text\">
-          <span class=\"brand-name\">EmpManager</span>
-          <span class=\"brand-tagline\">v1.0</span>
+        <div class="brand-text">
+          <span class="brand-name">EmpManager</span>
+          <span class="brand-tagline">v1.0</span>
         </div>
       }
     </div>
@@ -32,13 +32,13 @@
       @for (item of navItems; track item.route) {
         <a
           mat-list-item
-          [routerLink]=\"item.route\"
-          routerLinkActive=\"active-link\"
-          [routerLinkActiveOptions]=\"{ exact: false }\"
-          [matTooltip]=\"isMenuCollapsed ? item.tooltip : ''\"
-          matTooltipPosition=\"right\">
+          [routerLink]="item.route"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: false }"
+          [matTooltip]="isMenuCollapsed ? item.tooltip : ''"
+          matTooltipPosition="right">
 
-          <mat-icon [fontIcon]=\"item.icon\" matListItemIcon></mat-icon>
+          <mat-icon [fontIcon]="item.icon" matListItemIcon></mat-icon>
 
           @if (!isMenuCollapsed) {
             <span matListItemTitle>{{ item.label }}</span>
@@ -48,7 +48,7 @@
     </mat-nav-list>
 
     <!-- Sidenav Footer -->
-    <div class=\"sidenav-footer\" [class.collapsed]=\"isMenuCollapsed\">
+    <div class="sidenav-footer" [class.collapsed]="isMenuCollapsed">
       @if (!isMenuCollapsed) {
         <small>© {{ currentYear }} EmpManager</small>
       }
@@ -60,29 +60,41 @@
   <mat-sidenav-content>
 
     <!-- Top Toolbar -->
-    <mat-toolbar color=\"primary\" class=\"app-toolbar\">
+    <mat-toolbar color="primary" class="app-toolbar">
 
       <!-- Menu toggle button -->
-      <button mat-icon-button (click)=\"toggleMenu()\" matTooltip=\"Toggle Menu\">
+      <button mat-icon-button (click)="toggleMenu()" matTooltip="Toggle Menu">
         <mat-icon>{{ isMenuCollapsed ? 'menu' : 'menu_open' }}</mat-icon>
       </button>
 
-      <span class=\"toolbar-title\">Employee Management System</span>
+      <span class="toolbar-title">Employee Management System</span>
 
-      <!-- Spacer pushes next items to the right -->\n      <span class=\"toolbar-spacer\"></span>
+      <!-- Spacer pushes next items to the right -->
+      <span class="toolbar-spacer"></span>
 
       <!-- Right side actions -->
       @if (authService.isAuthenticated()) {
-        <span class=\"user-welcome\">Welcome, <strong>{{ authService.currentUser() }}</strong></span>
+        <span class="user-welcome">Welcome, <strong>{{ authService.currentUser() }}</strong></span>
       }
 
-      <button mat-icon-button matTooltip=\"Notifications\">\n        <mat-icon>notifications</mat-icon>\n      </button>\n      <button mat-icon-button matTooltip=\"Settings\">\n        <mat-icon>settings</mat-icon>\n      </button>
+      <button mat-icon-button matTooltip="Notifications">
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Settings">
+        <mat-icon>settings</mat-icon>
+      </button>
 
       @if (authService.isAuthenticated()) {
-        <button mat-icon-button (click)=\"onLogout()\" matTooltip=\"Sign Out\">\n          <mat-icon>logout</mat-icon>\n        </button>\n      }\n    </mat-toolbar>
+        <button mat-icon-button (click)="onLogout()" matTooltip="Sign Out">
+          <mat-icon>logout</mat-icon>
+        </button>
+      }
+    </mat-toolbar>
 
     <!-- Page Content -->
-    <div class=\"main-content\">\n      <router-outlet></router-outlet>\n    </div>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
 
   </mat-sidenav-content>
 

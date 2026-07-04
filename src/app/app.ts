@@ -82,7 +82,12 @@ export class App implements OnInit {
   isMenuCollapsed = false;
   currentYear     = new Date().getFullYear();
 
-  navItems: NavItem[] = [\n    { label: 'Dashboard',    icon: 'dashboard',  route: '/dashboard',      tooltip: 'Dashboard' },\n    { label: 'Employees',    icon: 'people',     route: '/employees/list', tooltip: 'All Employees' },\n    { label: 'Add Employee', icon: 'person_add', route: '/employees/add',  tooltip: 'Add New Employee' },\n    { label: 'About',        icon: 'info',       route: '/about',          tooltip: 'About This App' },\n  ];
+  navItems: NavItem[] = [
+    { label: 'Dashboard',    icon: 'dashboard',  route: '/dashboard',      tooltip: 'Dashboard' },
+    { label: 'Employees',    icon: 'people',     route: '/employees/list', tooltip: 'All Employees' },
+    { label: 'Add Employee', icon: 'person_add', route: '/employees/add',  tooltip: 'Add New Employee' },
+    { label: 'About',        icon: 'info',       route: '/about',          tooltip: 'About This App' },
+  ];
 
   ngOnInit(): void {
     this.employeeService.loadEmployees().subscribe({

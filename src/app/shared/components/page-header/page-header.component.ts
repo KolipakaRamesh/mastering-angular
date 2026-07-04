@@ -33,14 +33,38 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   template: `
     <div class="page-header">
-      <!-- Left side: Title and Subtitle -->\n      <div class="header-content">
-        <!-- INTERPOLATION: {{ }} outputs value as text -->\n        <!-- Property Binding would be: [textContent]=\"title\" — less common -->\n        <h1 class="page-title">{{ title }}</h1>
+      <!-- Left side: Title and Subtitle -->
+      <div class="header-content">
+        <!-- INTERPOLATION: {{ }} outputs value as text -->
+        <!-- Property Binding would be: [textContent]="title" — less common -->
+        <h1 class="page-title">{{ title }}</h1>
 
-        <!-- @if — modern control flow, replaces *ngIf -->\n        <!-- No CommonModule import needed! -->\n        @if (subtitle) {\n          <p class="page-subtitle">{{ subtitle }}</p>\n        }\n      </div>
+        <!-- @if — modern control flow, replaces *ngIf -->
+        <!-- No CommonModule import needed! -->
+        @if (subtitle) {
+          <p class="page-subtitle">{{ subtitle }}</p>
+        }
+      </div>
 
-      <!-- Right side: Action buttons passed from parent -->\n      <!-- ng-content = CONTENT PROJECTION -->\n      <!-- Parent can put any HTML here: <app-page-header><button>Add</button></app-page-header> -->\n      <div class="header-actions">\n        <ng-content></ng-content>
+      <!-- Right side: Action buttons passed from parent -->
+      <!-- ng-content = CONTENT PROJECTION -->
+      <!-- Parent can put any HTML here: <app-page-header><button>Add</button></app-page-header> -->
+      <div class="header-actions">
+        <ng-content></ng-content>
 
-        <!-- @if checks the showAddButton input -->\n        @if (showAddButton) {\n          <!-- (click) is EVENT BINDING — calls onAddClick() when clicked -->\n          <button mat-raised-button color="primary" (click)="onAddClick()">\n            <!-- mat-icon uses Material Icons font -->\n            <mat-icon>add</mat-icon>\n            <!-- INTERPOLATION for the button label -->\n            {{ addButtonLabel }}\n          </button>\n        }\n      </div>\n    </div>\n  `,
+        <!-- @if checks the showAddButton input -->
+        @if (showAddButton) {
+          <!-- (click) is EVENT BINDING — calls onAddClick() when clicked -->
+          <button mat-raised-button color="primary" (click)="onAddClick()">
+            <!-- mat-icon uses Material Icons font -->
+            <mat-icon>add</mat-icon>
+            <!-- INTERPOLATION for the button label -->
+            {{ addButtonLabel }}
+          </button>
+        }
+      </div>
+    </div>
+  `,
   styles: [`
     .page-header {
       display: flex;
@@ -93,4 +117,7 @@ export class PageHeaderComponent {
 
   // Called when the Add button is clicked
   // Emits the event UP to the parent
-  onAddClick(): void {\n    this.addClicked.emit(); // EventEmitter<void> — no data needed\n  }\n}
+  onAddClick(): void {
+    this.addClicked.emit(); // EventEmitter<void> — no data needed
+  }
+}

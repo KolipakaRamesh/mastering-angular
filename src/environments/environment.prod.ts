@@ -11,11 +11,11 @@ export const environment = {
   production: true,
 
   // Production mock data URL (if still used, else point to real API endpoint)
-  apiUrl: 'https://api.yourcompany.com/api',
+  apiUrl: 'assets/data',
 
   // ── REAL BACKEND API URL in Production ────────────────────────────────
   // Replace with your actual deployed API domain before going live.
-  backendUrl: 'https://api.yourcompany.com',
+  backendUrl: 'http://localhost:5225',
 
   appVersion: '1.0.0',
   features: {

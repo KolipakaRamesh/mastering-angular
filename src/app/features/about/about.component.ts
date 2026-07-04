@@ -29,13 +29,16 @@ import { RouterLink } from '@angular/router';
   imports: [MatCardModule, MatIconModule, MatButtonModule, MatDividerModule, MatChipsModule, RouterLink],
   template: `
     <div class="about-container fade-in">
-      <h1 class="page-title">About This Application</h1>\n      <p class="page-subtitle">A comprehensive Angular 20 learning project</p>
+      <h1 class="page-title">About This Application</h1>
+      <p class="page-subtitle">A comprehensive Angular 20 learning project</p>
 
       <mat-card class="info-card about-card">
         <mat-card-header>
           <mat-icon mat-card-avatar>school</mat-icon>
-          <mat-card-title>Employee Management System</mat-card-title>\n          <mat-card-subtitle>Built to learn Angular 20 from scratch</mat-card-subtitle>
-        </mat-card-header>\n        <mat-card-content>
+          <mat-card-title>Employee Management System</mat-card-title>
+          <mat-card-subtitle>Built to learn Angular 20 from scratch</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
           <p>
             This application demonstrates ALL major Angular 20 concepts through a practical,
             real-world example. Each feature is commented with explanations, comparisons
@@ -44,7 +47,8 @@ import { RouterLink } from '@angular/router';
 
           <mat-divider></mat-divider>
 
-          <h3>Angular Concepts Covered</h3>\n          <div class="chips-container">
+          <h3>Angular Concepts Covered</h3>
+          <div class="chips-container">
             @for (concept of concepts; track concept) {
               <mat-chip>{{ concept }}</mat-chip>
             }
@@ -52,7 +56,8 @@ import { RouterLink } from '@angular/router';
 
           <mat-divider></mat-divider>
 
-          <h3>Tech Stack</h3>\n          <div class="tech-list">
+          <h3>Tech Stack</h3>
+          <div class="tech-list">
             @for (tech of techStack; track tech.name) {
               <div class="tech-item">
                 <mat-icon [style.color]="tech.color">{{ tech.icon }}</mat-icon>
@@ -98,7 +103,7 @@ export class AboutComponent {
   techStack = [
     { name: 'Angular 20', icon: 'web', color: '#dd0031', description: 'Frontend framework by Google' },
     { name: 'TypeScript 5.9', icon: 'code', color: '#3178c6', description: 'Typed JavaScript superset' },
-    { name: 'Angular Material 20', icon: 'palette', color: '#009688', description: 'Google\\'s Material Design components' },
+    { name: 'Angular Material 20', icon: 'palette', color: '#009688', description: "Google's Material Design components" },
     { name: 'SCSS', icon: 'style', color: '#cc6699', description: 'CSS preprocessor for advanced styling' },
     { name: 'RxJS 7', icon: 'sync', color: '#b7178c', description: 'Reactive programming library' },
   ];

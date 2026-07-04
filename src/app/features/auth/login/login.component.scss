@@ -1,0 +1,245 @@
+// ════════════════════════════════════════════════════════════════
+// FILE: login.component.scss
+// PURPOSE: Full-screen login page styling — premium dark glassmorphism design.
+// ════════════════════════════════════════════════════════════════
+
+// ── FULL-SCREEN WRAPPER ─────────────────────────────────────────
+// This is the outermost container. It takes up 100% of the viewport.
+// The login route does NOT have the sidenav, so this fills everything.
+.login-wrapper {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow: hidden;
+
+  // Rich dark gradient background — matches the app's sidenav palette
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #312e81 70%, #1e3a5f 100%);
+}
+
+// ── DECORATIVE BACKGROUND BLOBS ─────────────────────────────────
+// Soft glowing circles in the background for visual depth.
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #6366f1, transparent);
+  top: -10%;
+  right: -5%;
+  animation: float 8s ease-in-out infinite;
+}
+
+.blob-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #0ea5e9, transparent);
+  bottom: -5%;
+  left: -5%;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-20px) scale(1.05); }
+}
+
+// ── LOGIN CARD ──────────────────────────────────────────────────
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+
+  // Glassmorphism effect
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+
+  // Subtle entrance animation
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── CARD HEADER ─────────────────────────────────────────────────
+.card-header {
+  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 2.5rem 2rem 1.5rem;\n  gap: 0;\
+}
+
+.logo-wrapper {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #6366f1, #0ea5e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4); }
+  50%       { box-shadow: 0 8px 32px rgba(99, 102, 241, 0.7); }
+}
+
+.logo-icon {\n  font-size: 36px !important;\n  width: 36px !important;\n  height: 36px !important;\n  color: #fff;\n}
+
+.app-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.app-subtitle {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0.25rem 0 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.header-divider {\n  background: rgba(255, 255, 255, 0.1) !important;\n  margin: 0 1.5rem;\n}
+
+// ── CARD CONTENT ────────────────────────────────────────────────
+.card-content {
+  padding: 1.5rem 2rem 1rem !important;\
+}
+
+.welcome-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.25rem;
+}
+
+.sign-in-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 1.5rem;
+}
+
+// ── FORM FIELDS ─────────────────────────────────────────────────
+.full-width {
+  width: 100%;
+  display: block;
+  margin-bottom: 0.5rem;
+
+  // Override Material's default white background for the glassmorphism look
+  ::ng-deep .mat-mdc-form-field-flex {
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+  }
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  // Input text color
+  ::ng-deep input.mat-mdc-input-element {
+    color: #fff;
+    caret-color: #6366f1;
+  }
+
+  // Label color
+  ::ng-deep .mat-mdc-floating-label {
+    color: rgba(255, 255, 255, 0.6) !important;\n  }
+
+  // Outline color
+  ::ng-deep .mdc-notched-outline__leading,
+  ::ng-deep .mdc-notched-outline__notch,
+  ::ng-deep .mdc-notched-outline__trailing {
+    border-color: rgba(255, 255, 255, 0.15) !important;\n  }
+
+  // Focused outline
+  ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
+  ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
+  ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
+    border-color: #6366f1 !important;
+    border-width: 2px !important;
+  }
+
+  // Placeholder
+  ::ng-deep input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+// Prefix/suffix icons
+.field-icon {\n  color: rgba(255, 255, 255, 0.4) !important;\n  font-size: 18px !important;\n  margin-right: 8px;\n}
+
+.password-toggle {\n  color: rgba(255, 255, 255, 0.4) !important;\n\n  &:hover {\n    color: rgba(255, 255, 255, 0.7) !important;\n  }\n}
+
+// ── ERROR BANNER ────────────────────────────────────────────────
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  color: #fca5a5;
+  font-size: 0.875rem;
+
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+.error-banner-icon {\n  font-size: 18px !important;\n  width: 18px !important;\n  height: 18px !important;\n  color: #f87171;\n}
+
+// ── SUBMIT BUTTON ────────────────────────────────────────────────
+.login-button {
+  width: 100%;
+  height: 52px !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.025em;
+  margin-top: 0.5rem;
+  display: flex !important;\n  align-items: center;\n  justify-content: center;\n  gap: 0.5rem;\n  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;\n  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4) !important;\n  transition: all 0.25s ease !important;\n\n  mat-icon {\n    font-size: 20px !important;\n    width: 20px !important;\n    height: 20px !important;\n  }\n\n  &:not([disabled]):hover {\n    transform: translateY(-2px);\n    box-shadow: 0 8px 28px rgba(99, 102, 241, 0.5) !important;\n  }\n\n  &:not([disabled]):active {\n    transform: translateY(0);\n  }\n\n  &[disabled] {\n    opacity: 0.65 !important;\n    cursor: not-allowed;\n  }\n}
+
+// Spinner inside the button
+.button-spinner {\n  ::ng-deep circle {\n    stroke: rgba(255, 255, 255, 0.8) !important;\n  }\n}
+
+// ── CARD FOOTER ─────────────────────────────────────────────────
+.card-footer {\n  padding: 1rem 2rem 1.5rem !important;\n}
+
+.footer-hint {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0.35rem;\n  font-size: 0.8rem;\n  color: rgba(255, 255, 255, 0.4);\n  margin: 0;\n\n  strong {\n    color: rgba(255, 255, 255, 0.65);\n    font-family: 'Courier New', monospace;\n    background: rgba(255, 255, 255, 0.08);\n    padding: 1px 6px;\n    border-radius: 4px;\n  }\n}\n\n.hint-icon {\n  font-size: 14px !important;\n  width: 14px !important;\n  height: 14px !important;\n  opacity: 0.5;\n}\n

@@ -1,36 +1,34 @@
 /**
  * FILE: auth.guard.ts
- * PURPOSE: A Route Guard that controls access to protected routes.
+ * PURPOSE: A routing guard that secures routes by checking user authentication status.
  *
- * ANGULAR CONCEPT: Route Guards
- * Guards are functions that run BEFORE a route is activated.
- * They return: true (allow), false (block), or UrlTree (redirect).
+ * ANGULAR CONCEPTS:
+ * - Functional Route Guards (CanActivateFn)
+ * - Dependency Injection in functional context using inject()
+ * - AuthService checks to inspect authentication status
+ * - Routing redirects with route state preservation (returnUrl query parameter)
  *
- * MODERN WAY (Angular 14+): Functional guards
- * export const authGuard: CanActivateFn = (route, state) => { ... }
+ * ─────────────────────────────────────────────
+ * INTERVIEW QUESTIONS:
+ * ─────────────────────────────────────────────
+ * Q: What is the difference between Class-based Guards and Functional Guards in Angular?
+ * A: Class-based guards implement an interface (like CanActivate) and are registered as services. Functional guards are simple arrow functions matching the CanActivateFn signature. Functional guards are the modern approach (Angular 15+), require less boilerplate, and work naturally with the `inject()` function.
  *
- * OLD WAY (Angular 8/9): Class-based guards implementing CanActivate
- *
- * INTERVIEW:
- * Q: What is the difference between canActivate and canDeactivate?
- * A: canActivate runs BEFORE entering a route.
- *    canDeactivate runs BEFORE LEAVING a route ("unsaved changes" warnings).
+ * Q: How can a route guard redirect an unauthenticated user while preserving the original request URL?
+ * A: Retrieve the target URL from the `RouterStateSnapshot.url` argument, and pass it as a query parameter (e.g., `returnUrl`) to the login page redirect route.
  */
 
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
-  // SIMULATION: Check if user is "logged in"
-  // In a real app: const authService = inject(AuthService); return authService.isAuthenticated();
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-  if (isLoggedIn) {
+  if (authService.isAuthenticated()) {
     return true;
   }
 
-  // Redirect to dashboard and pass the attempted URL
-  return router.parseUrl(`/dashboard?returnUrl=${state.url}`);
+  return router.parseUrl(`/login?returnUrl=${state.url}`);
 };

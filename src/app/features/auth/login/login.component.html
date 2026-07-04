@@ -1,0 +1,210 @@
+<!--
+  FILE: features/auth/login/login.component.html
+  PURPOSE: Login page template — full-screen centered card with reactive form.
+
+  ANGULAR TEMPLATE CONCEPTS:
+  ═══════════════════════════════════════════════════════════════════
+
+  1. (ngSubmit)
+     Fires when the HTML form is submitted (user clicks the button OR presses Enter).
+     Calls onSubmit() in the component.
+     Using (ngSubmit) on <form> is preferred over (click) on the button —
+     it handles keyboard submission correctly.
+
+  2. [formGroup]="loginForm"
+     Binds the Angular FormGroup to this <form> element.
+     Required import: ReactiveFormsModule.
+
+  3. formControlName="username"
+     Connects an input to a specific FormControl inside the FormGroup.
+     The string "username" must match the key in fb.group({}).
+
+  4. @if (hasError('username', 'required'))
+     Angular 17+ control flow syntax (replaces *ngIf directive).
+     Shows the error only when the field is touched AND has that error.
+
+  5. [type]="showPassword() ? 'text' : 'password'"
+     Dynamically switches input type between text and password.
+     showPassword() reads the signal value (note: signals need () to read).
+
+  6. mat-stroked-button / mat-flat-button
+     Angular Material button variants:
+       mat-button        → text only
+       mat-stroked-button → outlined
+       mat-flat-button   → filled (we use this for primary action)
+       mat-raised-button → elevated shadow
+
+  INTERVIEW QUESTION:
+  Q: What is the difference between [disabled] and the disabled attribute in Angular?
+  A: disabled (no brackets) = static HTML attribute, always disabled.
+     [disabled]="expression" = Angular property binding, evaluates the expression.
+     When isLoading() is true, the button is dynamically disabled.
+-->
+
+<div class="login-wrapper">
+
+  <!-- ── Background decoration blobs ────────────────────────── -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- ── Login Card ──────────────────────────────────────────── -->
+  <mat-card class="login-card" appearance="outlined">
+
+    <!-- Card Header: Logo + Title -->
+    <mat-card-header class="card-header">
+      <div class="logo-wrapper">
+        <mat-icon class="logo-icon">business_center</mat-icon>
+      </div>
+      <h1 class="app-title">EmpManager</h1>
+      <p class="app-subtitle">Employee Management System</p>
+    </mat-card-header>
+
+    <mat-divider class="header-divider"></mat-divider>
+
+    <!-- Card Content: The Form -->
+    <mat-card-content class="card-content">
+
+      <h2 class="welcome-text">Welcome back</h2>
+      <p class="sign-in-label">Sign in to your account</p>
+
+      <!--
+        [formGroup]="loginForm"  → connects to the FormGroup in the component
+        (ngSubmit)="onSubmit()"  → fires when Enter is pressed OR button clicked
+      -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- ── USERNAME FIELD ──────────────────────────────────── -->
+        <!--
+          mat-form-field: Material container that adds the underline, label, error area.
+          appearance="outline": modern outlined style.
+
+          floatLabel="always": keeps the label above the input at all times.
+          (Without this, the label floats up when the user starts typing.)
+        -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+
+          <!--
+            formControlName="username": binds to loginForm.controls['username']
+            matInput: Material input directive — adds Material styling/behavior
+          -->
+          <input
+            matInput
+            formControlName="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            id="login-username"
+          />
+
+          <!-- Prefix icon inside the input field -->
+          <mat-icon matPrefix class="field-icon">person</mat-icon>
+
+          <!--
+            mat-error: only shown when the FormControl is INVALID + TOUCHED.
+            @if is Angular 17+ control flow — replaces *ngIf.
+          -->
+          <mat-error>
+            @if (hasError('username', 'required')) {
+              Username is required.
+            } @else if (hasError('username', 'minlength')) {
+              Username must be at least 3 characters.
+            }
+          </mat-error>
+        </mat-form-field>
+
+        <!-- ── PASSWORD FIELD ──────────────────────────────────── -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+
+          <!--
+            [type]="showPassword() ? 'text' : 'password'"
+            Ternary expression in property binding.
+            showPassword() reads the signal value — signals ALWAYS need () to read.
+          -->
+          <input
+            matInput
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            id="login-password"
+          />
+
+          <mat-icon matPrefix class="field-icon">lock</mat-icon>
+
+          <!-- Password visibility toggle button inside the field -->
+          <button
+            type="button"
+            mat-icon-button
+            matSuffix
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            class="password-toggle"
+          >\n            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+
+          <mat-error>
+            @if (hasError('password', 'required')) {
+              Password is required.
+            } @else if (hasError('password', 'minlength')) {
+              Password must be at least 6 characters.
+            }
+          </mat-error>
+        </mat-form-field>
+
+        <!-- ── ERROR MESSAGE (from API) ────────────────────────── -->
+        <!--
+          @if (errorMessage()): reads the signal value.
+          This block only appears when the API returns an error (wrong credentials).
+          In Step 6 the AuthService will set this via errorMessage.set('...').
+        -->
+        @if (errorMessage()) {
+          <div class="error-banner" role="alert">
+            <mat-icon class="error-banner-icon">error_outline</mat-icon>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <!-- ── SUBMIT BUTTON ────────────────────────────────────── -->
+        <!--
+          [disabled]="isLoading() || loginForm.invalid"
+          Disables the button while loading OR while form is invalid on first render.
+          (We remove the invalid check after first touch to not pre-disable the form.)
+          Actually we only disable on isLoading so the user can attempt to submit and see errors.
+        -->
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="login-button"
+          [disabled]="isLoading()"
+          id="login-submit"
+        >
+          <!-- Show spinner when loading, text when idle -->
+          @if (isLoading()) {
+            <ng-container>
+              <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+              <span>Signing in…</span>
+            </ng-container>
+          } @else {
+            <ng-container>
+              <mat-icon>login</mat-icon>\n              <span>Sign In</span>
+            </ng-container>
+          }
+        </button>
+
+      </form>
+
+    </mat-card-content>
+
+    <!-- Card Footer: Info -->
+    <mat-card-footer class="card-footer">
+      <p class="footer-hint">
+        <mat-icon class="hint-icon">info_outline</mat-icon>
+        Use <strong>admin</strong> / <strong>admin123</strong> to sign in.
+      </p>
+    </mat-card-footer>
+
+  </mat-card>
+
+</div>

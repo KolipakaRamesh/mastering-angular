@@ -1,20 +1,29 @@
 /**
- * FILE: app.component.ts  (Root Component / Shell)
- * PURPOSE: The outermost shell of the application — contains the nav sidebar and router outlet.
+ * FILE: app.ts
+ * PURPOSE: Root application component that sets up the main layout, sidebar navigation, and handles initial data load.
  *
- * LIFECYCLE HOOKS — Angular calls these methods at specific times:
- *   ngOnInit()  — Called ONCE after component initializes
- *   ngOnDestroy() — Called just before component is destroyed (cleanup)
+ * ANGULAR CONCEPTS:
+ * - Root Component (standalone app setup)
+ * - Navigation layout using Angular Material Sidenav, Toolbar, and List
+ * - RxJS Interoperability (converting routing events into Signals using toSignal)
+ * - Dynamic layout switching via computed signals (hiding sidebar on login route)
+ * - Initialization logic on startup (ngOnInit loading employees)
  *
+ * ─────────────────────────────────────────────
  * INTERVIEW QUESTIONS:
- * Q: What is the difference between ngOnInit() and constructor()?
- * A: Constructor runs when TypeScript creates the class instance.
- *    ngOnInit() runs after Angular has set all @Input() values.
- *    BEST PRACTICE: Use constructor ONLY for DI. Use ngOnInit() for init logic.
+ * ─────────────────────────────────────────────
+ * Q: How does `toSignal` work in Angular, and why is it useful?
+ * A: `toSignal` is a utility from `@angular/core/rxjs-interop` that converts an Observable into a Signal. It subscribes to the Observable immediately and manages cleanup automatically when the context is destroyed, making it easier to read asynchronous streams synchronously inside templates.
+ *
+ * Q: What is the purpose of `eventCoalescing` in zone configurations?
+ * A: It merges multiple events triggered in the same macro-task cycle into a single change detection run, preventing unnecessary rendering cycles and improving application performance.
  */
 
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnInit, inject, computed } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs/operators';
+
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
@@ -24,8 +33,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { EmployeeService } from './core/services/employee.service';
+import { AuthService } from './core/services/auth.service';
 
-// Navigation item interface — defines shape of our nav links
 interface NavItem {
   label: string;
   icon: string;
@@ -52,30 +61,41 @@ interface NavItem {
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
+  private router          = inject(Router);
   private employeeService = inject(EmployeeService);
+  public authService      = inject(AuthService);
+
+  // Converts Router NavigationEnd events into a Signal containing the current URL
+  private currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map(e => e.urlAfterRedirects)
+    ),
+    { initialValue: this.router.url }
+  );
+
+  // Computed state to determine if we are on the login page (layout switching)
+  isLoginRoute = computed(() =>
+    this.currentUrl()?.startsWith('/login') ?? false
+  );
 
   isMenuCollapsed = false;
-  currentYear = new Date().getFullYear();
+  currentYear     = new Date().getFullYear();
 
-  navItems: NavItem[] = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard', tooltip: 'Dashboard' },
-    { label: 'Employees', icon: 'people', route: '/employees/list', tooltip: 'All Employees' },
-    { label: 'Add Employee', icon: 'person_add', route: '/employees/add', tooltip: 'Add New Employee' },
-    { label: 'About', icon: 'info', route: '/about', tooltip: 'About This App' },
-  ];
+  navItems: NavItem[] = [\n    { label: 'Dashboard',    icon: 'dashboard',  route: '/dashboard',      tooltip: 'Dashboard' },\n    { label: 'Employees',    icon: 'people',     route: '/employees/list', tooltip: 'All Employees' },\n    { label: 'Add Employee', icon: 'person_add', route: '/employees/add',  tooltip: 'Add New Employee' },\n    { label: 'About',        icon: 'info',       route: '/about',          tooltip: 'About This App' },\n  ];
 
   ngOnInit(): void {
     this.employeeService.loadEmployees().subscribe({
-      next: (employees) => {
-        console.log(`✅ Loaded ${employees.length} employees`);
-      },
-      error: (err) => {
-        console.error('❌ Failed to load employees:', err);
-      }
+      next: (employees) => console.log(`✅ Loaded ${employees.length} employees`),
+      error: (err)      => console.error('❌ Failed to load employees:', err)
     });
   }
 
   toggleMenu(): void {
     this.isMenuCollapsed = !this.isMenuCollapsed;
+  }
+
+  onLogout(): void {
+    this.authService.logout();
   }
 }

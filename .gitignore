@@ -48,3 +48,10 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# ── .NET / ASP.NET Core ──────────────────────────────────────────
+backend/**/bin/
+backend/**/obj/
+*.user
+.vs/
+backend/**/publish/

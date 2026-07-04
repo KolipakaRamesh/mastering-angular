@@ -11,6 +11,12 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
+# Inject the backend URL at build-time using the build arg
+ARG BACKEND_URL
+RUN if [ -n "$BACKEND_URL" ]; then \
+      sed -i "s|backendUrl: 'http://localhost:5225'|backendUrl: '$BACKEND_URL'|g" src/environments/environment.prod.ts; \
+    fi
+
 # Build the project in production configuration
 RUN npm run build -- --configuration=production
 

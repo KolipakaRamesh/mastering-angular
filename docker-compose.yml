@@ -1,8 +1,8 @@
 services:
   backend:
     build:
-      context: ./backend/EmpManager.API
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: backend/EmpManager.API/Dockerfile
     ports:
       - "5225:8080"
     environment:

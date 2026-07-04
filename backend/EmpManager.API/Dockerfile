@@ -2,12 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore dependencies
-COPY ["EmpManager.API.csproj", "./"]
-RUN dotnet restore "./EmpManager.API.csproj"
+# Copy csproj and restore dependencies (paths relative to repository root)
+COPY ["backend/EmpManager.API/EmpManager.API.csproj", "backend/EmpManager.API/"]
+RUN dotnet restore "backend/EmpManager.API/EmpManager.API.csproj"
 
 # Copy everything else and build the release app
 COPY . .
+WORKDIR "/src/backend/EmpManager.API"
 RUN dotnet publish "EmpManager.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Stage 2: Run the application

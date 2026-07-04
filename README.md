@@ -121,6 +121,44 @@ Use the following credentials to log in during development:
 
 ---
 
+## 🐳 Docker Deployment (Local)
+
+You can run the entire full-stack application (both Angular frontend and ASP.NET Core backend) locally using Docker and Docker Compose.
+
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+
+### Run with Docker Compose
+
+1. **Build and start the containers**:
+   From the repository root directory, run:
+   ```bash
+   docker-compose up --build -d
+   ```
+   This will:
+   - Compile the Angular frontend and serve it using Nginx on **http://localhost:4200/**.
+   - Compile the ASP.NET Core Web API backend and run it on **http://localhost:5225/**.
+   - Automatically configure CORS and API URLs for local container communication.
+
+2. **Verify containers are running**:
+   ```bash
+   docker ps
+   ```
+
+3. **Access the application**:
+   Open your browser and navigate to **http://localhost:4200/**.
+   Log in with the development credentials:
+   - **Username:** `admin`
+   - **Password:** `admin123`
+
+4. **Teardown**:
+   To stop and remove the containers, run:
+   ```bash
+   docker-compose down
+   ```
+
+---
+
 ## 📖 Additional Resources
 - [Angular Documentation](https://angular.dev)
 - [Angular Material](https://material.angular.io)

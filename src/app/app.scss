@@ -3,132 +3,70 @@
 
    Note: Angular components have ENCAPSULATED styles by default.
    These styles ONLY apply to this component's template.
-   ViewEncapsulation.Emulated (default) — Angular adds unique
-   attributes to scope CSS to this component only.
+   They do NOT leak into child components.
+
+   This is called: ViewEncapsulation.Emulated (default)
+   Angular adds unique attributes like _ngcontent-abc123
+   to scope CSS to this component only.
+
+   Other options:
+     ViewEncapsulation.None   → styles leak globally (like plain CSS)
+     ViewEncapsulation.ShadowDom → uses browser's Shadow DOM API
    ─────────────────────────────────────────────────────────────  */
 
+/* The sidenav container must take full viewport height */
 .sidenav-container {
-  height: 100vh;
+  height: 100vh; /* viewport height */
   overflow: hidden;
 }
 
 /* ── SIDENAV PANEL ─────────────────────────────────────────── */
 mat-sidenav {
   width: 240px;
-  transition: width 0.3s ease;
-  background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
-  border-right: none;
+  transition: width 0.3s ease; /* Smooth collapse animation */\n  background: linear-gradient(180deg, #1a237e 0%, #283593 100%);\n  border-right: none;
 
-  &.collapsed {
-    width: 64px;
-  }
-}
+  /* Collapsed state — triggered by [class.collapsed]=\"isMenuCollapsed\" */\n  &.collapsed {\n    width: 64px; /* Just enough for icons */\n  }\n}
 
 /* ── SIDENAV HEADER ────────────────────────────────────────── */
 .sidenav-header {
-  display: flex;
-  align-items: center;
-  padding: 20px 16px;
-  background: rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;\n  align-items: center;\n  padding: 20px 16px;\n  background: rgba(0, 0, 0, 0.1);\n  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
-  &.collapsed {
-    justify-content: center;
-    padding: 20px 0;
-  }
-}
+  &.collapsed {\n    justify-content: center;\n    padding: 20px 0;\n  }\n}
 
-.brand-icon {
-  font-size: 32px;
-  width: 32px;
-  height: 32px;
-  color: white;
-}
+.brand-icon {\n  font-size: 32px;\n  width: 32px;\n  height: 32px;\n  color: white;\n}
 
-.brand-text {
-  margin-left: 12px;
-  display: flex;
-  flex-direction: column;
-}
+.brand-text {\n  margin-left: 12px;\n  display: flex;\n  flex-direction: column;\n}
 
-.brand-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  letter-spacing: 0.5px;
-}
+.brand-name {\n  font-size: 16px;\n  font-weight: 700;\n  color: white;\n  letter-spacing: 0.5px;\n}
 
-.brand-tagline {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-}
+.brand-tagline {\n  font-size: 11px;\n  color: rgba(255, 255, 255, 0.6);\n}
 
 /* ── NAVIGATION LINKS ──────────────────────────────────────── */
+
+/* Active link styling — added by routerLinkActive=\"active-link\" */
 .active-link {
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-left: 3px solid #82b1ff;
+  background: rgba(255, 255, 255, 0.15) !important;\n  border-left: 3px solid #82b1ff;
 
-  mat-icon, span {
-    color: #82b1ff !important;
-  }
-}
+  /* Style the icon and text inside active link */\n  mat-icon, span {\n    color: #82b1ff !important;\n  }\n}
 
+/* Style all nav list items */
 mat-nav-list a {
-  color: rgba(255, 255, 255, 0.8);
-  margin: 4px 8px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
-  }
-
-  mat-icon {
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  span {
-    font-size: 14px;
-    font-weight: 500;
-  }
-}
+  color: rgba(255, 255, 255, 0.8);\n  margin: 4px 8px;\n  border-radius: 8px;\n  transition: background 0.2s ease;\n\n  &:hover {\n    background: rgba(255, 255, 255, 0.08);\n    color: white;\n  }\n\n  mat-icon {\n    color: rgba(255, 255, 255, 0.7);\n  }\n\n  span {\n    font-size: 14px;\n    font-weight: 500;\n  }\n}
 
 /* ── SIDENAV FOOTER ────────────────────────────────────────── */
 .sidenav-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
+  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  padding: 16px;\n  text-align: center;\n  color: rgba(255, 255, 255, 0.4);\n  font-size: 12px;\n  border-top: 1px solid rgba(255, 255, 255, 0.1);\n}
 
 /* ── TOP TOOLBAR ───────────────────────────────────────────── */
 .app-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
+  position: sticky;\n  top: 0;\n  z-index: 100; /* Above content, below spinner overlay */\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);\n}
 
-.toolbar-title {
-  font-size: 18px;
-  font-weight: 500;
-  margin-left: 8px;
-}
+.toolbar-title {\n  font-size: 18px;\n  font-weight: 500;\n  margin-left: 8px;\n}
 
-.toolbar-spacer {
-  flex: 1 1 auto;
-}
+/* Flexbox trick: pushes right-side items to the right */\n.toolbar-spacer {\n  flex: 1 1 auto;\n}
+
+.user-welcome {\n  font-size: 14px;\n  font-weight: 400;\n  margin-right: 16px;\n  opacity: 0.9;\n  letter-spacing: 0.3px;\n  \n  strong {\n    font-weight: 600;\n    color: #e3f2fd;\n  }\n}
 
 /* ── MAIN CONTENT ──────────────────────────────────────────── */
 .main-content {
-  padding: 24px;
-  overflow-y: auto;
-  height: calc(100vh - 64px);
-  background: #f5f5f5;
-}
+  padding: 24px;\n  overflow-y: auto;\n  height: calc(100vh - 64px); /* Full height minus toolbar (64px) */\n  background: #f5f5f5;\n}

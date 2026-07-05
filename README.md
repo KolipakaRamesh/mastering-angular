@@ -159,6 +159,19 @@ You can run the entire full-stack application (both Angular frontend and ASP.NET
 
 ---
 
+## 📖 OpenWiki Documentation
+
+Detailed technical documentation is available in the `openwiki/` directory to help you understand the system architecture, frontend, backend, deployment, and local setup:
+
+- **[OpenWiki Quickstart](openwiki/quickstart.md)** — High-level project entry point.
+- **[Application Architecture](openwiki/architecture.md)** — Diagram and description of the system architecture and Nginx proxy.
+- **[Frontend (Angular)](openwiki/frontend.md)** — Key concepts (Signals, Standalone Components, Reactive Forms, Route Guards, Interceptors) and module structure.
+- **[Backend (ASP.NET Core)](openwiki/backend.md)** — Project structure, endpoints, services, and token details.
+- **[Development Guide](openwiki/development.md)** — Prerequisites and step-by-step local development setup.
+- **[Deployment](openwiki/deployment.md)** — Docker & Docker Compose setup, environment-specific configurations.
+
+---
+
 ## 📖 Additional Resources
 - [Angular Documentation](https://angular.dev)
 - [Angular Material](https://material.angular.io)

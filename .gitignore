@@ -55,3 +55,6 @@ backend/**/obj/
 *.user
 .vs/
 backend/**/publish/
+
+# Agent / IDE-specific files
+.gemini/

@@ -15,7 +15,8 @@
  * A: `@for` is a built-in control flow structure compiled directly by Angular. It requires a `track` expression for element identity, which avoids bugs and optimizes performance without needing to import `CommonModule`.
  */
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -72,6 +73,7 @@ import { RouterLink } from '@angular/router';
         <mat-card-actions>
           <a mat-raised-button color="primary" routerLink="/dashboard">Go to Dashboard</a>
           <a mat-stroked-button routerLink="/employees/list">View Employees</a>
+          <button mat-raised-button color="warn" (click)="triggerTestError()">Test HTTP Error</button>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -93,6 +95,8 @@ import { RouterLink } from '@angular/router';
   `]
 })
 export class AboutComponent {
+  private http = inject(HttpClient);
+
   concepts = [
     'Standalone Components', 'Signals', 'Reactive Forms', 'Routing', 'Lazy Loading',
     'Route Guards', 'HTTP Interceptors', 'RxJS', 'Custom Pipes', 'Custom Directives',
@@ -107,4 +111,12 @@ export class AboutComponent {
     { name: 'SCSS', icon: 'style', color: '#cc6699', description: 'CSS preprocessor for advanced styling' },
     { name: 'RxJS 7', icon: 'sync', color: '#b7178c', description: 'Reactive programming library' },
   ];
+
+  triggerTestError(): void {
+    console.log('Triggering simulated HTTP error...');
+    this.http.get('/api/nonexistent-test-route-500').subscribe({
+      next: (val) => console.log('Simulated response:', val),
+      error: (err) => console.log('Simulated error completed in component:', err)
+    });
+  }
 }

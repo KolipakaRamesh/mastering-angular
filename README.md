@@ -33,7 +33,7 @@ A hands-on full-stack application built while revisiting Angular 20 and integrat
 - **Reactive Forms** — Type-safe, dynamic form handling with validation
 - **Routing & Lazy Loading** — Feature-based routes loaded on demand
 - **Guards** — Route protection with `CanActivate` functional guards
-- **Interceptors** — HTTP middleware for managing global loading state and attaching JWT headers (`auth.interceptor.ts`)
+- **Interceptors** — HTTP middleware for managing global loading state (`loading.interceptor.ts`), attaching JWT headers (`auth.interceptor.ts`), and global HTTP error handling with toast notifications (`error.interceptor.ts`)
 - **Angular Material** — Pre-built UI components following Material Design
 - **Enterprise Structure** — `core/`, `features/`, `shared/` folder architecture
 
@@ -62,7 +62,7 @@ A hands-on full-stack application built while revisiting Angular 20 and integrat
     ├── app/
     │   ├── core/
     │   │   ├── guards/                 # Route guards (auth.guard.ts, etc.)
-    │   │   ├── interceptors/           # HTTP interceptors (auth, loading)
+    │   │   ├── interceptors/           # HTTP interceptors (auth, loading, error)
     │   │   ├── models/                 # TypeScript interfaces & models
     │   │   └── services/               # Singleton services (AuthService, etc.)
     │   ├── features/
@@ -114,7 +114,7 @@ ng serve
 ```
 Open your browser at **http://localhost:4200/**. The app hot-reloads on file changes.
 
-### 🔐 Development Login Credentials
+### 🔑 Development Login Credentials
 Use the following credentials to log in during development:
 - **Username:** `admin`
 - **Password:** `admin123`
@@ -172,7 +172,7 @@ Detailed technical documentation is available in the `openwiki/` directory to he
 
 ---
 
-## 📖 Additional Resources
+## 📚 Additional Resources
 - [Angular Documentation](https://angular.dev)
 - [Angular Material](https://material.angular.io)
 - [Microsoft .NET Core Docs](https://docs.microsoft.com/en-us/dotnet/)

@@ -24,33 +24,37 @@
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection
+  provideZoneChangeDetection,
+  importProvidersFrom
 } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { routes } from './app.routes';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 // ApplicationConfig is just an object with a "providers" array
 // It's passed to bootstrapApplication() in main.ts
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(MatSnackBarModule),
 
     // ── GLOBAL ERROR LISTENER ───────────────────────────────
     // Angular 20 feature — captures unhandled errors globally
     provideBrowserGlobalErrorListeners(),
 
-    // ── CHANGE DETECTION STRATEGY ───────────────────────────
+    // ── CHANGE DETECTION STRATEGY ──────────────────────────
     // Zone.js-based change detection with event coalescing.
     // eventCoalescing: true batches multiple DOM events into
     // a single change detection cycle — BETTER PERFORMANCE.
     // This is the modern replacement of NgZone configurations.
     provideZoneChangeDetection({ eventCoalescing: true }),
 
-    // ── ROUTER ───────────────────────────────────────────────
+    // ── ROUTER ────────────────────────────────────────────
     // Provides Angular's Router with our routes configuration.
     // withViewTransitions() enables smooth page transition animations
     // (Angular 17+ feature, uses browser's View Transitions API)
@@ -59,16 +63,16 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions() // Smooth fade between route changes
     ),
 
-    // ── HTTP CLIENT ───────────────────────────────────────────
+    // ── HTTP CLIENT ───────────────────────────────────────
     // Provides Angular's HttpClient service app-wide.
     // withInterceptors([]) registers our functional interceptors.
     // withFetch() uses browser's native Fetch API (faster than XHR).
     provideHttpClient(
       withFetch(),                              // Use Fetch instead of XHR
-      withInterceptors([authInterceptor, loadingInterceptor])    // Register our interceptors
+      withInterceptors([authInterceptor, loadingInterceptor, errorInterceptor])    // Register our interceptors
     ),
 
-    // ── ANIMATIONS ────────────────────────────────────────────
+    // ── ANIMATIONS ────────────────────────────────────────
     // Provides Angular animations (required for Angular Material).
     // Async version loads animation code lazily — better performance.
     // OLD WAY: imports: [BrowserAnimationsModule] in AppModule
